@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
+// use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use App\Models\Project;
+use App\Transformers\ProjectList\ProjectTransformer as ProjectListTransformer;
+use Carbon\Carbon;
 
-class ProjectController extends Controller
+class ProjectController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +18,29 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        //
+        try{
+            // 篩選有關聯資料表的資料回傳
+            $project = Project::query();
+
+            $project_list = fractal($project->get(), new ProjectListTransformer)->toArray();
+
+            return response()->json([
+                'Status' => 'Success',
+                'Data' => $project_list,
+                'TimeStamp' => Carbon::now()->format('Y-m-d\TH:i:s.uP T')
+            ], 200);
+
+        }catch(Exception $e){
+            $message = "發生未知的錯誤：".$e->getMessage();
+            $status_code = 500;
+
+            return response()->json([
+                'Status' => 'Failure',
+                'ErrorMessage' => $message,
+                'Code' => 500,
+                'TimeStamp' => Carbon::now()->format('Y-m-d\TH:i:s.uP T')
+            ], 500);
+        }
     }
 
     /**

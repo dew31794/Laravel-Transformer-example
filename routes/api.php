@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function () {
     // 員工
     Route::group(['namespace' => 'API', 'prefix' => 'staff'], function () {
-        // 取的員工列表
+        // 員工列表
         Route::get('list', 'StaffInfoController@index')->name('api.staff.list');
         // 新增員工
         Route::post('create', 'StaffInfoController@store')->name('api.staff.create');
@@ -26,5 +26,11 @@ Route::prefix('v1')->group(function () {
         Route::put('update/{id}', 'StaffInfoController@update')->name('api.staff.update');
         // 刪除員工
         Route::delete('delete/{id}', 'StaffInfoController@destroy')->name('api.staff.delete');
+    });
+
+    // 專案
+    Route::group(['namespace' => 'API', 'prefix' => 'project'], function () {
+        // 專案列表
+        Route::get('list', 'ProjectController@index')->name('api.project.list');
     });
 });
