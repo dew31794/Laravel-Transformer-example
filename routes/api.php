@@ -32,5 +32,7 @@ Route::prefix('v1')->group(function () {
     Route::group(['namespace' => 'API', 'prefix' => 'project'], function () {
         // 專案列表
         Route::get('list', 'ProjectController@index')->name('api.project.list');
+        // 新增專案
+        Route::post('create', 'ProjectController@store')->name('api.project.create');
     });
 });

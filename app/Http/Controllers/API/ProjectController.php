@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Project;
 use App\Transformers\ProjectList\ProjectTransformer as ProjectListTransformer;
+use App\Transformers\ProjectCreate\ProjectTransformer as ProjectCreateTransformer;
+use App\Http\Requests\API\ProjectCreateRequest;
 use Carbon\Carbon;
 
 class ProjectController extends ApiController
@@ -44,24 +46,27 @@ class ProjectController extends ApiController
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProjectCreateRequest $request)
     {
-        //
+        $data = Project::where('num', $request->num)->get();
+
+        if(!count($data)){
+            $project = Project::create($request->except(['_token']));
+            
+            $createProject = fractal(Project::where('id', $project->id)->firstOrFail(), new ProjectCreateTransformer);
+
+            return $this->respondSuccess($createProject);
+        }else{
+            $message = '課程編號已存在，請重新輸入。';
+            $code = 422;
+
+            return $this->respondError($message , $code);
+        }
     }
 
     /**
