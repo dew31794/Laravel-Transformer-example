@@ -8,7 +8,10 @@ use Illuminate\Support\Str;
 use App\Models\Project;
 use App\Transformers\ProjectList\ProjectTransformer as ProjectListTransformer;
 use App\Transformers\ProjectCreate\ProjectTransformer as ProjectCreateTransformer;
+use App\Transformers\ProjectSingle\ProjectTransformer as ProjectSingleTransformer;
+use App\Transformers\ProjectUpdate\ProjectTransformer as ProjectUpdateTransformer;
 use App\Http\Requests\API\ProjectCreateRequest;
+use App\Http\Requests\API\ProjectUpdateRequest;
 use Carbon\Carbon;
 
 class ProjectController extends ApiController
@@ -77,18 +80,18 @@ class ProjectController extends ApiController
      */
     public function show($id)
     {
-        //
-    }
+        $project = Project::find($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        if(!empty($project)){
+            $showProject = fractal($project, new ProjectSingleTransformer);
+
+            return $this->respondSuccess($showProject);
+        }else{
+            $message = '無任何資料，請重新確認';
+            $code = 200;
+
+            return $this->respondOther($message , $code);
+        }
     }
 
     /**
@@ -98,9 +101,39 @@ class ProjectController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ProjectUpdateRequest $request, $id)
     {
-        //
+        $project = Project::find($id);
+
+        if(!empty($project)){
+            $data = array(
+                'name'          => $request->name,
+                'gender'        => $request->gender,
+                'phone'         => $request->phone,
+                'email'         => $request->email,
+                'arrival_date'  => $request->arrival_date,
+                'resignation_date' => $request->resignation_date,
+                'department'    => $request->department,
+                'job_title'     => $request->job_title,
+                'remark'        => $request->remark,
+            );
+
+            if($project->update($data)){
+                $updateProject = fractal(Project::find($id), new ProjectUpdateTransformer);
+
+                return $this->respondSuccess($updateProject);
+            }else{
+                $message = '更新失敗，請重新確認';
+                $code = 422;
+    
+                return $this->respondError($message , $code);
+            }
+        }else{
+            $message = '無任何資料，請重新確認';
+            $code = 200;
+
+            return $this->respondOther($message , $code);
+        }
     }
 
     /**
@@ -111,6 +144,25 @@ class ProjectController extends ApiController
      */
     public function destroy($id)
     {
-        //
+        $project = Project::find($id);
+
+        if(!empty($project)){
+            if($project->delete()){
+                $message = $project->name.' 專案已刪除。';
+                $code = 200;
+
+                return $this->respondSuccessMsg($message , $code);
+            }else{
+                $message = '刪除失敗，請重新確認';
+                $code = 422;
+    
+                return $this->respondError($message , $code);
+            }
+        }else{
+            $message = '無任何資料被刪除，請重新確認';
+            $code = 200;
+
+            return $this->respondOther($message , $code);
+        }
     }
 }

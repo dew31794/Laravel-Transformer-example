@@ -34,5 +34,11 @@ Route::prefix('v1')->group(function () {
         Route::get('list', 'ProjectController@index')->name('api.project.list');
         // 新增專案
         Route::post('create', 'ProjectController@store')->name('api.project.create');
+        // 取得專案內容
+        Route::get('show/{id}', 'ProjectController@show')->name('api.project.show');
+        // 更新專案內容
+        Route::put('update/{id}', 'ProjectController@update')->name('api.project.update');
+        // 刪除專案
+        Route::delete('delete/{id}', 'ProjectController@destroy')->name('api.project.delete');
     });
 });
