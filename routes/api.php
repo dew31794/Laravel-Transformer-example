@@ -41,4 +41,18 @@ Route::prefix('v1')->group(function () {
         // 刪除專案
         Route::delete('delete/{id}', 'ProjectController@destroy')->name('api.project.delete');
     });
+
+    // 帳戶
+    Route::group(['namespace' => 'API', 'prefix' => 'account'], function () {
+        // 帳戶列表
+        Route::get('list', 'AccountController@index')->name('api.account.list');
+        // 新增帳戶
+        Route::post('create', 'AccountController@store')->name('api.account.create');
+        // 取得帳戶內容
+        Route::get('show/{id}', 'AccountController@show')->name('api.account.show');
+        // 更新帳戶
+        Route::put('update/{id}', 'AccountController@update')->name('api.account.update');
+        // 刪除帳戶
+        Route::delete('delete/{id}', 'AccountController@destroy')->name('api.account.delete');
+    });
 });
