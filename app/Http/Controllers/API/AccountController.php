@@ -56,6 +56,7 @@ class AccountController extends ApiController
      */
     public function store(AccountCreateRequest $request)
     {
+        // 經過驗證的資料
         $request->validated();
         
         $data = Account::where('account', $request->account)->get();
