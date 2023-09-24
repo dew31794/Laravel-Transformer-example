@@ -108,13 +108,12 @@ class ProjectController extends ApiController
         if(!empty($project)){
             $data = array(
                 'name'          => $request->name,
-                'gender'        => $request->gender,
-                'phone'         => $request->phone,
-                'email'         => $request->email,
-                'arrival_date'  => $request->arrival_date,
-                'resignation_date' => $request->resignation_date,
-                'department'    => $request->department,
-                'job_title'     => $request->job_title,
+                'description'   => $request->description,
+                'staff_id'      => $request->staff_id,
+                'sort'          => $request->sort,
+                'start_date'    => $request->start_date,
+                'end_date'      => $request->end_date,
+                'status'        => $request->status,
                 'remark'        => $request->remark,
             );
 
