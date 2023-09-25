@@ -30,7 +30,8 @@ class AccountSeeder extends Seeder
                 'password' => Hash::make('Ab123456'),
                 'staff_id' => '1',
                 'status' => '1',
-                'remark' => NULL
+                'remark' => NULL,
+                'token' => Str::random(64)
             ),
             array(
                 'account' => Str::random(6),
@@ -94,7 +95,8 @@ class AccountSeeder extends Seeder
                 'password' => Hash::make('Ab123456'),
                 'staff_id' => '9',
                 'status' => '1',
-                'remark' => NULL
+                'remark' => NULL,
+                'token' => Str::random(64)
             ),
             // array(
             //     'account' => Str::random(6),

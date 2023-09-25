@@ -54,5 +54,7 @@ Route::prefix('v1')->group(function () {
         Route::put('update/{id}', 'AccountController@update')->name('api.account.update');
         // 刪除帳戶
         Route::delete('delete/{id}', 'AccountController@destroy')->name('api.account.delete');
+        // 修改密碼
+        Route::post('reset-password', 'AccountController@resetPassword')->name('api.account.reset.password');
     });
 });

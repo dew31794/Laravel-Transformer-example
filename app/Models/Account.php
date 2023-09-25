@@ -16,6 +16,7 @@ class Account extends Model
         'staff_id',
         'status',
         'remark',
+        'token',
     ];
 
     public function staff()

@@ -20,7 +20,8 @@ class CreateAccountsTable extends Migration
             $table->integer('staff_id')->unsigned()->index()->comment('員工ID');
             $table->integer('status')->default(0)->comment('帳戶狀態【0=未啟用、1=啟用、2=停用、3=黑名單、9=刪除】');
             $table->text('remark')->nullable()->comment('備註');
-            $table->rememberToken(); //資料表一定要包含一個 remember_token 欄位，這是用來儲存「記住我」的 token
+            // $table->rememberToken(); //資料表一定要包含一個 remember_token 欄位，這是用來儲存「記住我」的 token
+            $table->string('token', 64)->nullable()->comment('金鑰');
             $table->timestamps();
         });
     }

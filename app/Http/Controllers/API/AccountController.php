@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 // use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 use App\Models\Account;
 use App\Transformers\AccountList\AccountTransformer as AccountListTransformer;
 use App\Transformers\AccountCreate\AccountTransformer as AccountCreateTransformer;
@@ -12,6 +13,7 @@ use App\Transformers\AccountSingle\AccountTransformer as AccountSingleTransforme
 use App\Transformers\AccountUpdate\AccountTransformer as AccountUpdateTransformer;
 use App\Http\Requests\API\AccountCreateRequest;
 use App\Http\Requests\API\AccountUpdateRequest;
+use App\Http\Requests\API\AccountResetPasswordRequest;
 use Carbon\Carbon;
 
 class AccountController extends ApiController
@@ -152,6 +154,52 @@ class AccountController extends ApiController
                 $code = 422;
     
                 return $this->respondError($message , $code);
+            }
+        }else{
+            $message = '無任何資料被刪除，請重新確認';
+            $code = 200;
+
+            return $this->respondOther($message , $code);
+        }
+    }
+
+    /**
+     * Remake the password field
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function resetPassword(AccountResetPasswordRequest $request)
+    {
+
+        $oldPassword = $request->input('old_password');
+        $password = $request->input('password');
+
+        $account = Account::where('account',$request->account)
+                            ->where('token',$request->token)->first();
+
+        if(!empty($account)){
+            if (!Hash::check($oldPassword, $account->password)) {
+                $message = '舊密碼輸入無效。';
+                $code = 422;
+    
+                return $this->respondError($message , $code);
+            }else{
+                $request['password'] = bcrypt($request->password);
+
+                // return $request->only('password');
+                if($account->fill($request->only('password'))->save()){
+                    $message = $account->staff->name.' 密碼已更新。';
+                    $code = 200;
+    
+                    return $this->respondSuccessMsg($message , $code);
+                }else{
+                    $message = '密碼更新失敗。';
+                    $code = 422;
+        
+                    return $this->respondError($message , $code);
+                }
             }
         }else{
             $message = '無任何資料被刪除，請重新確認';
